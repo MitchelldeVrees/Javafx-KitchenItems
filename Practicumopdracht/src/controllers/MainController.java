@@ -6,7 +6,6 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import practicumopdracht.MainApplication;
 import views.MainView;
-import views.StartView;
 
 import java.util.Optional;
 
@@ -16,18 +15,25 @@ public class MainController extends Controller  {
 
     private MainView mainView;
     private StartController startController;
-    private static final int WIDTH = 1000;
+    private NewProductController newProductController;
+    private static final int WIDTH = 800;
     private static final int HEIGHT = 800;
 
     private Scene scene;
 
     public MainController(StartController startController) {
         this.startController = startController;
+
         mainView = new MainView();
 
         mainView.getMenuItemLaden().setOnAction(event -> bestandLadenButtonHandler());
-
+        mainView.getMenuNewProduct().setOnAction(event -> changeButtonHandler());
+        newProductController = new NewProductController(this);
         scene = new Scene(mainView.getRoot(), WIDTH, HEIGHT);
+    }
+
+    private void changeButtonHandler() {
+        newProductController.displayView();
     }
 
     private void bestandLadenButtonHandler() {

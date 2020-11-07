@@ -8,7 +8,7 @@ public class StartController extends Controller {
 
     private StartView startView;
     private MainController mainController;
-    private static final int WIDTH = 1000;
+    private static final int WIDTH = 800;
     private static final int HEIGHT = 800;
 
     private Scene scene;

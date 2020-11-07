@@ -14,11 +14,12 @@ import javafx.scene.text.Text;
 
 public class MainView extends View {
 
-    private Button change;
     private VBox mainview;
     private MenuItem menuItemOpslaan;
     private MenuItem menuItemLaden;
     private MenuItem menuItemAfsluiten;
+    private MenuItem menuNewProduct;
+    private MenuItem menuMainView;
     private MenuBar menuBar;
     private ListView listView;
 
@@ -32,8 +33,15 @@ public class MainView extends View {
         menu.getItems().add(menuItemOpslaan);
         menu.getItems().add(menuItemLaden);
         menu.getItems().add(menuItemAfsluiten);
+
+        Menu view = new Menu("View");
+        menuMainView = new MenuItem("Main");
+        menuNewProduct = new MenuItem("Nieuw Product");
+        view.getItems().add(menuNewProduct);
+        view.getItems().add(menuMainView);
+
         menuBar = new MenuBar();
-        menuBar.getMenus().add(menu);
+        menuBar.getMenus().addAll(menu, view);
 
         Text producten = new Text("Producten");
         producten.setFont(Font.font(null, FontWeight.BOLD, 30));
@@ -48,11 +56,6 @@ public class MainView extends View {
         Label sorteren3 = new Label("Sorteren3");
 
         Label sorteren4 = new Label("Sorteren4");
-
-
-        change = new Button("Nieuw product toevoegen");
-
-
 
         listView = new ListView();
 
@@ -80,17 +83,10 @@ public class MainView extends View {
         listFuncties.setPadding(new Insets(10,10,10,10));
         listFuncties.setSpacing(50);
 
-
-        //buttons to navigate
-        HBox buttons = new HBox();
-        buttons.getChildren().add(change);
-        buttons.setAlignment(Pos.BOTTOM_RIGHT);
-
-        //est everyting in vBox
+        //set everyting in vBox
         VBox vBox= new VBox();
         vBox.getChildren().add(names);
         vBox.getChildren().add(listFuncties);
-        vBox.getChildren().add(buttons);
 
 
 
@@ -106,6 +102,14 @@ public class MainView extends View {
 
     }
 
+    public MenuItem getMenuNewProduct() {
+        return menuNewProduct;
+    }
+
+    public MenuItem getMenuMainView() {
+        return menuMainView;
+    }
+
     public MenuItem getMenuItemOpslaan() {
         return menuItemOpslaan;
     }
@@ -117,6 +121,8 @@ public class MainView extends View {
     public MenuItem getMenuItemAfsluiten() {
         return menuItemAfsluiten;
     }
+
+
 
     @Override
     public Parent getRoot() {
