@@ -5,7 +5,9 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
 
 
 public class NewProductView extends View {
@@ -19,6 +21,19 @@ public class NewProductView extends View {
     private MenuItem menuNewProduct;
     private MenuItem menuMainView;
     private MenuBar menuBar;
+    private TextField naamProductField;
+    private TextField merkField;
+    private TextField toevoegingField;
+    private ComboBox<String> soortVoedsel;
+    private ListView listView;
+    private Button opslaan;
+    private Button wijzig;
+    private Button verwijderen;
+
+    private RadioButton datumSorterenOplopend;
+    private RadioButton datumSorterenAflopend;
+    private ToggleGroup sorterenToggleGroup;
+
 
     public NewProductView() {
 
@@ -33,8 +48,8 @@ public class NewProductView extends View {
         Menu view = new Menu("View");
         menuMainView = new MenuItem("Main");
         menuNewProduct = new MenuItem("Nieuw Product");
-        view.getItems().add(menuNewProduct);
         view.getItems().add(menuMainView);
+        view.getItems().add(menuNewProduct);
 
         menuBar = new MenuBar();
         menuBar.getMenus().addAll(menu, view);
@@ -49,13 +64,13 @@ public class NewProductView extends View {
         Label soortVoedselLabel = new Label("Soort voedsel:");
         Label toevoegingLabel = new Label("Toevoeging:");
 
-        TextField naamProductField = new TextField();
+        naamProductField = new TextField();
         houdbaarheidsDatumField = new DatePicker();
         aankoopDatumField = new DatePicker();
-        TextField merkField = new TextField();
-        TextField toevoegingField = new TextField();
+        merkField = new TextField();
+        toevoegingField = new TextField();
 
-        ComboBox<String> soortVoedsel = new ComboBox<>();
+        soortVoedsel = new ComboBox<>();
 
         soortVoedsel.getItems().addAll(
                 "Sauzen",
@@ -64,20 +79,35 @@ public class NewProductView extends View {
                     "Niet-Koelkast Producten"
         );
 
+        wijzig = new Button("Wijzig");
+        verwijderen = new Button("Verwijderen");
+        opslaan = new Button("Opslaan");
 
-        Button opslaan = new Button("Opslaan");
+         listView = new ListView();
 
-         ListView listView = new ListView();
-         listView.getItems().add("Test1");
-         listView.getItems().add("Test2");
-         listView.getItems().add("Test3");
-         listView.getItems().add("Test4");
+        datumSorterenAflopend = new RadioButton("Datum Aflopend");
+        datumSorterenOplopend = new RadioButton("Datum Oplopend");
+        sorterenToggleGroup = new ToggleGroup();
+        datumSorterenAflopend.setToggleGroup(sorterenToggleGroup);
+        datumSorterenOplopend.setToggleGroup(sorterenToggleGroup);
+
+        HBox sorterenHbox = new HBox();
+        sorterenHbox.getChildren().addAll(datumSorterenAflopend);
+        sorterenHbox.getChildren().addAll(datumSorterenOplopend);
+        sorterenHbox.setSpacing(30);
+
+        HBox hbox = new HBox();
+        hbox.getChildren().add(wijzig);
+        hbox.getChildren().add(verwijderen);
+        hbox.setSpacing(5);
 
         VBox vbox = new VBox();
         vbox.getChildren().addAll(opslaan);
         vbox.getChildren().addAll(listView);
+        vbox.getChildren().addAll(hbox);
+        vbox.getChildren().addAll(sorterenHbox);
         vbox.setSpacing(10);
-
+        
         GridPane grid = new GridPane();
 
         grid.setVgap(10);
@@ -108,6 +138,8 @@ public class NewProductView extends View {
         soortVoedsel.prefWidthProperty().bind(mainview.widthProperty().subtract(100));
         opslaan.prefWidthProperty().bind(mainview.widthProperty().subtract(20));
         menuBar.prefWidthProperty().bind(mainview.widthProperty().subtract(0));
+        wijzig.prefWidthProperty().bind(mainview.widthProperty().subtract(70));
+        verwijderen.prefWidthProperty().bind(mainview.widthProperty().subtract(70));
 
         mainview.getChildren().addAll(topGrid, grid,vbox);
 
@@ -131,6 +163,55 @@ public class NewProductView extends View {
 
     public MenuItem getMenuMainView() {
         return menuMainView;
+    }
+
+
+    public TextField getNaamProductField() {
+        return naamProductField;
+    }
+
+    public TextField getMerkField() {
+        return merkField;
+    }
+
+    public TextField getToevoegingField() {
+        return toevoegingField;
+    }
+
+    public ComboBox<String> getSoortVoedsel() {
+        return soortVoedsel;
+    }
+
+    public DatePicker getHoudbaarheidsDatumField() {
+        return houdbaarheidsDatumField;
+    }
+
+    public DatePicker getAankoopDatumField() {
+        return aankoopDatumField;
+    }
+
+    public ListView getListView() {
+        return listView;
+    }
+
+    public Button getOpslaan() {
+        return opslaan;
+    }
+
+    public Button getWijzig() {
+        return wijzig;
+    }
+
+    public Button getVerwijderen() {
+        return verwijderen;
+    }
+
+    public RadioButton getDatumSorterenOplopend() {
+        return datumSorterenOplopend;
+    }
+
+    public RadioButton getDatumSorterenAflopend() {
+        return datumSorterenAflopend;
     }
 
     @Override

@@ -4,6 +4,7 @@ import controllers.StartController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class MainApplication extends Application {
 
@@ -13,11 +14,14 @@ public class MainApplication extends Application {
     public static void setStage(Scene scene) {
         stage.setScene(scene);
         stage.show();
+
     }
 
     @Override
     public void start(Stage stage) {
         MainApplication.stage = stage;
+        stage.initStyle(StageStyle.UNDECORATED);
+
         stage.setTitle(title);
         StartController startController = new StartController();
         startController.displayView();

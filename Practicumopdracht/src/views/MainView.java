@@ -37,8 +37,8 @@ public class MainView extends View {
         Menu view = new Menu("View");
         menuMainView = new MenuItem("Main");
         menuNewProduct = new MenuItem("Nieuw Product");
-        view.getItems().add(menuNewProduct);
         view.getItems().add(menuMainView);
+        view.getItems().add(menuNewProduct);
 
         menuBar = new MenuBar();
         menuBar.getMenus().addAll(menu, view);
