@@ -1,23 +1,28 @@
 package controllers;
 
+import comparators.DateComparator;
 import data.ObjectProductDAO;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import models.Product;
 import practicumopdracht.MainApplication;
+import views.MainView;
 import views.NewProductView;
 
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Calendar;
 import java.util.Optional;
 
 public class NewProductController extends Controller {
 
     private NewProductView newProductView;
+    private MainView mainView;
     private static final int WIDTH = 800;
     private static final int HEIGHT = 800;
     private MainController mainController;
@@ -27,6 +32,8 @@ public class NewProductController extends Controller {
     private String getMerk;
     private String getToevoeging;
     private String getSoortVoedsel;
+    private String getSoortVoedselSorteren;
+    private ObservableList productitems;
     private LocalDate getHoudbaarheidsDatum;
     private LocalDate getAankoopDatum;
     private Alert alert;
@@ -37,7 +44,7 @@ public class NewProductController extends Controller {
 
     private Scene scene;
 
-    public NewProductController(MainController mainController){
+    public NewProductController(MainController mainController) {
         this.mainController = mainController;
         newProductView = new NewProductView();
         newProductView.getOpslaan().setOnAction(event -> opslaanButtonHandler());
@@ -47,10 +54,55 @@ public class NewProductController extends Controller {
         newProductView.getWijzig().setOnAction(event -> wijzigButtonHandler());
         newProductView.getVerwijderen().setOnAction(event -> verwijderenButtonHandler());
         newProductView.getMenuItemAfsluiten().setOnAction(event -> afsluitenMenuHandler());
+        newProductView.getSoortVoedselSorteren().setOnAction(e -> sorterenVoedselHandler());
+
 
         scene = new Scene(newProductView.getRoot(), WIDTH, HEIGHT);
 
+        newProductView.getDatumSorterenToggleGroup().selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observableValue, Toggle toggle, Toggle t1) {
+                RadioButton rb = (RadioButton) newProductView.getDatumSorterenToggleGroup().getSelectedToggle();
 
+                if (rb != null){
+                    String selected = rb.getText();
+                    switch (selected){
+                        case "Datum Aflopend":
+                            refreshDatumAflopend();
+                            break;
+                        case "Datum Oplopend":
+                            refreshDatumOplopend();
+                            break;
+                    }
+                }
+            }
+        });
+
+
+
+
+    }
+
+    private void sorterenVoedselHandler() {
+       getSoortVoedsel =  newProductView.getSoortVoedselSorteren().getValue();
+        productitems = newProductView.getListView().getItems();
+
+
+
+        switch (getSoortVoedsel){
+            case "Kruiden":
+
+            break;
+            case "Sauzen":
+
+                break;
+            case "Koelkast Producten":
+
+                break;
+            case "Niet-Koelkast Producten":
+
+                break;
+        }
 
 
     }
@@ -119,24 +171,40 @@ public class NewProductController extends Controller {
     }
 
 
-
     private void ladenMenuHandler() {
+        approvalAlert("Weet u zeker dat u deze data wilt laden?");
+        Optional<ButtonType> result = alert.showAndWait();
 
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
         newProductView.getListView().getItems().clear();
+        mainController.getObjectProductDAO().load();
         objectProductDAO.load();
+        mainController.refreshData();
         refreshData();
+                succesAlert("Data geladen");
+            } catch (Exception e) {
+                succesAlert("Fout met laden");
+            }
+
+        }
     }
 
     private void opslaandMenuHandler() {
-        objectProductDAO.save();
+        approvalAlert("Weet u zeker dat u deze data wilt opslaan? \n Dit overwrite de bestaande data.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            objectProductDAO.save();
+        }else{}
     }
+
 
     private void opslaanButtonHandler() {
         getNaamProduct = newProductView.getNaamProductField().getText();
         getMerk = newProductView.getMerkField().getText();
         getHoudbaarheidsDatum = newProductView.getHoudbaarheidsDatumField().getValue();
         getAankoopDatum = newProductView.getAankoopDatumField().getValue();
-        getSoortVoedsel= newProductView.getSoortVoedsel().getValue();
+        getSoortVoedsel = newProductView.getSoortVoedsel().getValue();
         getToevoeging = newProductView.getToevoegingField().getText();
 
         Product selectedProduct = (Product) newProductView.getListView().getSelectionModel().getSelectedItem();
@@ -170,6 +238,18 @@ public class NewProductController extends Controller {
 
     }
 
+    public void refreshDatumAflopend(){
+        ObservableList<Product> productList = FXCollections.observableList(objectProductDAO.getAll());
+        productList.sort(new DateComparator().reversed());
+        newProductView.getListView().setItems(productList);
+    }
+
+    public void refreshDatumOplopend(){
+        ObservableList<Product> productList = FXCollections.observableList(objectProductDAO.getAll());
+        productList.sort(new DateComparator());
+        newProductView.getListView().setItems(productList);
+    }
+
     private void approvalAlert(String melding) {
         alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Let op!");
@@ -185,6 +265,14 @@ public class NewProductController extends Controller {
 
     public void displayView() {
         MainApplication.setStage(scene);
+    }
+
+    public NewProductView getNewProductView() {
+        return newProductView;
+    }
+
+    public ObjectProductDAO getObjectProductDAO() {
+        return objectProductDAO;
     }
 
 

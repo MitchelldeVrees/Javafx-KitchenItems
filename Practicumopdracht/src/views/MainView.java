@@ -122,6 +122,10 @@ public class MainView extends View {
         return menuItemAfsluiten;
     }
 
+    public ListView getListView() {
+        return listView;
+    }
+
 
 
     @Override
