@@ -26,21 +26,18 @@ public class NewProductView extends View {
     private TextField merkField;
     private TextField toevoegingField;
     private ComboBox<String> soortVoedsel;
-    private ComboBox<String> soortVoedselSorteren;
+    private TextField zoekbar;
     private ListView listView;
     private Button opslaan;
     private Button wijzig;
     private Button verwijderen;
+    private Button zoeken;
 
     private RadioButton datumSorterenOplopend;
     private RadioButton datumSorterenAflopend;
     private ToggleGroup datumSorterenToggleGroup;
 
-    private RadioButton sauzenSorteren;
-    private RadioButton kruidenSorteren;
-    private RadioButton koelkastSorteren;
-    private RadioButton nietKoelkastSorteren;
-    private ToggleGroup voedselSorterenToggleGroup;
+
 
     public NewProductView() {
 
@@ -89,8 +86,15 @@ public class NewProductView extends View {
         wijzig = new Button("Wijzig");
         verwijderen = new Button("Verwijderen");
         opslaan = new Button("Opslaan");
+        zoeken = new Button("zoeken");
 
          listView = new ListView();
+
+         zoekbar = new TextField();
+         zoekbar.setPromptText("Product naam...");
+         zoekbar.setPrefColumnCount(30);
+         zoekbar.getText();
+
 
         datumSorterenAflopend = new RadioButton("Datum Aflopend");
         datumSorterenOplopend = new RadioButton("Datum Oplopend");
@@ -98,34 +102,12 @@ public class NewProductView extends View {
         datumSorterenAflopend.setToggleGroup(datumSorterenToggleGroup);
         datumSorterenOplopend.setToggleGroup(datumSorterenToggleGroup);
 
-//        sauzenSorteren = new RadioButton("Sauzen");
-//        kruidenSorteren = new RadioButton("Kruiden");
-//        koelkastSorteren = new RadioButton("Koelkast");
-//        nietKoelkastSorteren = new RadioButton("Niet Koelkast");
-//        voedselSorterenToggleGroup = new ToggleGroup();
-//        sauzenSorteren.setToggleGroup(voedselSorterenToggleGroup);
-//        kruidenSorteren.setToggleGroup(voedselSorterenToggleGroup);
-//        koelkastSorteren.setToggleGroup(voedselSorterenToggleGroup);
-//        nietKoelkastSorteren.setToggleGroup(voedselSorterenToggleGroup);
-
-        soortVoedselSorteren = new ComboBox<>();
-
-        soortVoedselSorteren.getItems().addAll(
-                "Sauzen",
-                "Kruiden",
-                "Koelkast Producten",
-                "Niet-Koelkast Producten"
-        );
-
 
         HBox sorterenHbox = new HBox();
         sorterenHbox.getChildren().addAll(datumSorterenAflopend);
         sorterenHbox.getChildren().addAll(datumSorterenOplopend);
-        sorterenHbox.getChildren().addAll(soortVoedselSorteren);
-//        sorterenHbox.getChildren().addAll(sauzenSorteren);
-//        sorterenHbox.getChildren().addAll(kruidenSorteren);
-//        sorterenHbox.getChildren().addAll(koelkastSorteren);
-//        sorterenHbox.getChildren().addAll(nietKoelkastSorteren);
+        sorterenHbox.getChildren().addAll(zoekbar);
+        sorterenHbox.getChildren().addAll(zoeken);
         sorterenHbox.setSpacing(30);
 
         HBox hbox = new HBox();
@@ -246,14 +228,16 @@ public class NewProductView extends View {
         return datumSorterenAflopend;
     }
 
+    public TextField getZoekbar() {
+        return zoekbar;
+    }
 
+    public Button getZoeken() {
+        return zoeken;
+    }
 
     public ToggleGroup getDatumSorterenToggleGroup() {
         return datumSorterenToggleGroup;
-    }
-
-    public ComboBox<String> getSoortVoedselSorteren() {
-        return soortVoedselSorteren;
     }
 
     @Override

@@ -2,6 +2,8 @@ package models;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -57,12 +59,15 @@ public class Product implements java.io.Serializable{
     @Override
     public String toString() {
 
-        Date today = new Date();
-        Calendar houdbaarCalendar = Calendar.getInstance();
-        Date houdbaarDate = houdbaarCalendar.getTime();
 
-        long difference = today.getTime()-houdbaarDate.getTime()/86400000;
-        long realDifference = Math.abs(difference);
+        LocalDate today  = LocalDate.now();
+        LocalDate LocalHoudbaarheid = houdbaarheidsDatum;
+
+        Period period = Period.between(today,LocalHoudbaarheid);
+
+
+
+
 
 
         return  "\n" +"Naam Product:         " + naamProduct + '\n' +
@@ -71,7 +76,7 @@ public class Product implements java.io.Serializable{
                 "AankoopDatum:       " + aankoopDatum + '\n' +
                 "SoortVoedsel:          " + soortVoedsel + '\n' +
                 "Toevoeging  :          " + toevoeging + '\n' +
-                "Dagen tot over de datum" + realDifference;
+                "Dagen tot over de datum: " + period.getDays() ;
 
 
     }

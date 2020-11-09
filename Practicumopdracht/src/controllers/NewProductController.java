@@ -7,6 +7,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import models.Product;
@@ -54,7 +55,7 @@ public class NewProductController extends Controller {
         newProductView.getWijzig().setOnAction(event -> wijzigButtonHandler());
         newProductView.getVerwijderen().setOnAction(event -> verwijderenButtonHandler());
         newProductView.getMenuItemAfsluiten().setOnAction(event -> afsluitenMenuHandler());
-        newProductView.getSoortVoedselSorteren().setOnAction(e -> sorterenVoedselHandler());
+        newProductView.getZoeken().setOnAction(event -> zoekenButtonhandler());
 
 
         scene = new Scene(newProductView.getRoot(), WIDTH, HEIGHT);
@@ -83,29 +84,11 @@ public class NewProductController extends Controller {
 
     }
 
-    private void sorterenVoedselHandler() {
-       getSoortVoedsel =  newProductView.getSoortVoedselSorteren().getValue();
-        productitems = newProductView.getListView().getItems();
-
-
-
-        switch (getSoortVoedsel){
-            case "Kruiden":
-
-            break;
-            case "Sauzen":
-
-                break;
-            case "Koelkast Producten":
-
-                break;
-            case "Niet-Koelkast Producten":
-
-                break;
-        }
-
+    private void zoekenButtonhandler() {
+        FilteredList<ObjectProductDAO> filter = new FilteredList<ObjectProductDAO>( p -> true);
 
     }
+
 
     private void afsluitenMenuHandler() {
         approvalAlert("Weet u zeker dat u de applicatie wilt afsluiten?");
