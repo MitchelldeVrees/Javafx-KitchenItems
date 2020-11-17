@@ -66,10 +66,6 @@ public class Product implements java.io.Serializable{
         Period period = Period.between(today,LocalHoudbaarheid);
 
 
-
-
-
-
         return  "\n" +"Naam Product:         " + naamProduct + '\n' +
                 "Merk Product:          " + merkProduct + '\n' +
                 "Houdbaarheids Datum:   " + houdbaarheidsDatum + '\n' +
@@ -80,4 +76,5 @@ public class Product implements java.io.Serializable{
 
 
     }
+
 }

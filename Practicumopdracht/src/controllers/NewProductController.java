@@ -24,7 +24,7 @@ public class NewProductController extends Controller {
 
     private NewProductView newProductView;
     private MainView mainView;
-    private static final int WIDTH = 800;
+    private static final int WIDTH = 810;
     private static final int HEIGHT = 800;
     private MainController mainController;
 
@@ -38,6 +38,12 @@ public class NewProductController extends Controller {
     private LocalDate getHoudbaarheidsDatum;
     private LocalDate getAankoopDatum;
     private Alert alert;
+    private String errorTextProduct;
+    private String errorTextDatum;
+    private String errorTextMerk;
+    private String errorTextVoedsel;
+    private int errorCounter;
+    public static final int SHOW_ERROR_MINIMUM = 1;
 
 
     private Product product;
@@ -65,9 +71,9 @@ public class NewProductController extends Controller {
             public void changed(ObservableValue<? extends Toggle> observableValue, Toggle toggle, Toggle t1) {
                 RadioButton rb = (RadioButton) newProductView.getDatumSorterenToggleGroup().getSelectedToggle();
 
-                if (rb != null){
+                if (rb != null) {
                     String selected = rb.getText();
-                    switch (selected){
+                    switch (selected) {
                         case "Datum Aflopend":
                             refreshDatumAflopend();
                             break;
@@ -80,12 +86,12 @@ public class NewProductController extends Controller {
         });
 
 
-
-
     }
 
     private void zoekenButtonhandler() {
-        FilteredList<ObjectProductDAO> filter = new FilteredList<ObjectProductDAO>( p -> true);
+//        FilteredList<ObjectProductDAO> filter = new FilteredList<ObjectProductDAO>( p -> true);
+        Product selectedProduct = (Product) newProductView.getListView().getItems();
+        System.out.println(selectedProduct.getMerkProduct());
 
     }
 
@@ -160,11 +166,11 @@ public class NewProductController extends Controller {
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-        newProductView.getListView().getItems().clear();
-        mainController.getObjectProductDAO().load();
-        objectProductDAO.load();
-        mainController.refreshData();
-        refreshData();
+                newProductView.getListView().getItems().clear();
+                mainController.getObjectProductDAO().load();
+                objectProductDAO.load();
+                mainController.refreshData();
+                refreshData();
                 succesAlert("Data geladen");
             } catch (Exception e) {
                 succesAlert("Fout met laden");
@@ -178,7 +184,17 @@ public class NewProductController extends Controller {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             objectProductDAO.save();
-        }else{}
+        } else {
+        }
+    }
+
+    public boolean checkEmpty(String checker) {
+        return !checker.equals("");
+    }
+
+
+    public boolean checkNull(LocalDate checker) {
+        return checker != null;
     }
 
 
@@ -190,29 +206,77 @@ public class NewProductController extends Controller {
         getSoortVoedsel = newProductView.getSoortVoedsel().getValue();
         getToevoeging = newProductView.getToevoegingField().getText();
 
-        Product selectedProduct = (Product) newProductView.getListView().getSelectionModel().getSelectedItem();
-
-        if (selectedProduct == null) {
-            product = new Product(
-                    getId, getNaamProduct, getMerk, getHoudbaarheidsDatum,
-                    getAankoopDatum, getSoortVoedsel, getToevoeging
-            );
+        if (!checkEmpty(getNaamProduct)) {
+            newProductView.getNaamProductField().setStyle(("-fx-text-box-border: red"));
+            errorTextProduct = "- Naam is verplicht! \n";
+            errorCounter++;
         } else {
-            product = new Product(
-                    getId, getNaamProduct, getMerk, getHoudbaarheidsDatum,
-                    getAankoopDatum, getSoortVoedsel, getToevoeging
-            );
+            newProductView.getNaamProductField().setStyle("-fx-text-box-border: lightgrey");
+            errorTextProduct = "";
         }
 
-        objectProductDAO.addOrUpdate(product);
-        refreshData();
+        if (!checkEmpty(getMerk)) {
+            newProductView.getMerkField().setStyle(("-fx-text-box-border: red"));
+            errorTextMerk = "- Merk is verplicht! \n";
+            errorCounter++;
+        } else {
+            newProductView.getMerkField().setStyle("-fx-text-box-border: lightgrey");
+            errorTextMerk = "";
+        }
 
-        newProductView.getNaamProductField().clear();
-        newProductView.getMerkField().clear();
-        newProductView.getHoudbaarheidsDatumField().setValue(null);
-        newProductView.getAankoopDatumField().setValue(null);
-        newProductView.getSoortVoedsel().setValue(null);
-        newProductView.getToevoegingField().clear();
+        if (!checkNull(getHoudbaarheidsDatum)) {
+            newProductView.getHoudbaarheidsDatumField().setStyle(("-fx-text-box-border: red"));
+            errorTextDatum = "- Houdbaarheids Datum is verplicht! \n";
+            errorCounter++;
+        } else {
+            newProductView.getHoudbaarheidsDatumField().setStyle("-fx-text-box-border: lightgrey");
+            errorTextDatum = "";
+        }
+
+        if (getSoortVoedsel == null) {
+            newProductView.getSoortVoedsel().setStyle(("-fx-text-box-border: red"));
+            errorTextVoedsel = "- Soort voedsel is verplicht! \n";
+            errorCounter++;
+        } else {
+            newProductView.getSoortVoedsel().setStyle("-fx-text-box-border: lightgrey");
+            errorTextVoedsel = "";
+        }
+
+
+        if (errorCounter >= SHOW_ERROR_MINIMUM) {
+            alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("FOUTE Invoer");
+            alert.setHeaderText(null);
+            alert.setContentText("De volgende fouten zijn gevonden: \n" + errorTextProduct + errorTextMerk + errorTextDatum + errorTextVoedsel);
+            alert.showAndWait();
+            errorCounter = 0;
+        } else {
+
+
+            Product selectedProduct = (Product) newProductView.getListView().getSelectionModel().getSelectedItem();
+
+            if (selectedProduct == null) {
+                product = new Product(
+                        getId, getNaamProduct, getMerk, getHoudbaarheidsDatum,
+                        getAankoopDatum, getSoortVoedsel, getToevoeging
+                );
+            } else {
+                product = new Product(
+                        getId, getNaamProduct, getMerk, getHoudbaarheidsDatum,
+                        getAankoopDatum, getSoortVoedsel, getToevoeging
+                );
+            }
+
+            objectProductDAO.addOrUpdate(product);
+            refreshData();
+
+            newProductView.getNaamProductField().clear();
+            newProductView.getMerkField().clear();
+            newProductView.getHoudbaarheidsDatumField().setValue(null);
+            newProductView.getAankoopDatumField().setValue(null);
+            newProductView.getSoortVoedsel().setValue(null);
+            newProductView.getToevoegingField().clear();
+        }
     }
 
     public void refreshData() {
@@ -221,13 +285,13 @@ public class NewProductController extends Controller {
 
     }
 
-    public void refreshDatumAflopend(){
+    public void refreshDatumAflopend() {
         ObservableList<Product> productList = FXCollections.observableList(objectProductDAO.getAll());
         productList.sort(new DateComparator().reversed());
         newProductView.getListView().setItems(productList);
     }
 
-    public void refreshDatumOplopend(){
+    public void refreshDatumOplopend() {
         ObservableList<Product> productList = FXCollections.observableList(objectProductDAO.getAll());
         productList.sort(new DateComparator());
         newProductView.getListView().setItems(productList);

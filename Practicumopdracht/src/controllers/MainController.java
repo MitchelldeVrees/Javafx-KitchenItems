@@ -1,18 +1,21 @@
 package controllers;
 
+import comparators.DateComparator;
 import data.ObjectProductDAO;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
 import models.Product;
 import practicumopdracht.MainApplication;
 import views.MainView;
 import views.NewProductView;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Optional;
 
 public class MainController extends Controller  {
@@ -23,7 +26,8 @@ public class MainController extends Controller  {
     private NewProductView newProductView;
     private StartController startController;
     private NewProductController newProductController;
-    private static final int WIDTH = 800;
+    private Product product;
+    private static final int WIDTH = 810;
     private static final int HEIGHT = 800;
 
     private Scene scene;
@@ -39,6 +43,27 @@ public class MainController extends Controller  {
         mainView.getMenuNewProduct().setOnAction(event -> changeButtonHandler());
         newProductController = new NewProductController(this);
         scene = new Scene(mainView.getRoot(), WIDTH, HEIGHT);
+
+        mainView.getDatumSorterenToggleGroup().selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
+            @Override
+            public void changed(ObservableValue<? extends Toggle> observableValue, Toggle toggle, Toggle t1) {
+                RadioButton rb = (RadioButton) mainView.getDatumSorterenToggleGroup().getSelectedToggle();
+
+                if (rb != null){
+                    String selected = rb.getText();
+                    switch (selected){
+                        case "Datum Aflopend":
+                            refreshDatumAflopend();
+                            break;
+                        case "Datum Oplopend":
+                            refreshDatumOplopend();
+                            break;
+                    }
+                }
+            }
+        });
+
+
     }
 
     private void opslaanButtonhandler() {
@@ -64,6 +89,7 @@ public class MainController extends Controller  {
 
     private void changeButtonHandler() {
         newProductController.displayView();
+
     }
 
     private void bestandLadenButtonHandler() {
@@ -77,8 +103,12 @@ public class MainController extends Controller  {
                 newProductController.getObjectProductDAO().load();
                 objectProductDAO.load();
                 newProductController.refreshData();
+
+
                 refreshData();
                 succesAlert("Data geladen");
+
+
             } catch (Exception e) {
                 succesAlert("Fout met laden");
             }
@@ -109,7 +139,21 @@ public class MainController extends Controller  {
         ButtonType cancelButtonType = new ButtonType("Nee", ButtonBar.ButtonData.CANCEL_CLOSE);
         alert.getDialogPane().getButtonTypes().add(cancelButtonType);
 
+
     }
+
+    public void refreshDatumAflopend(){
+        ObservableList<Product> productList = FXCollections.observableList(objectProductDAO.getAll());
+        productList.sort(new DateComparator().reversed());
+        mainView.getListView().setItems(productList);
+    }
+
+    public void refreshDatumOplopend(){
+        ObservableList<Product> productList = FXCollections.observableList(objectProductDAO.getAll());
+        productList.sort(new DateComparator());
+        mainView.getListView().setItems(productList);
+    }
+
 
     public MainView getMainView() {
         return mainView;
@@ -124,3 +168,5 @@ public class MainController extends Controller  {
     }
 
 }
+
+

@@ -23,6 +23,10 @@ public class MainView extends View {
     private MenuBar menuBar;
     private ListView listView;
 
+    private RadioButton datumSorterenOplopend;
+    private RadioButton datumSorterenAflopend;
+    private ToggleGroup datumSorterenToggleGroup;
+
 
     public MainView(){
 
@@ -49,9 +53,8 @@ public class MainView extends View {
         Text functies = new Text("Functies");
         functies.setFont(Font.font(null, FontWeight.BOLD, 30));
 
-        Label sorteren1 = new Label("Sorteren1");
 
-        Label sorteren2 = new Label("Sorteren2");
+
 
         Label sorteren3 = new Label("Sorteren3");
 
@@ -61,12 +64,19 @@ public class MainView extends View {
 
         mainview = new VBox();
 
+        datumSorterenAflopend = new RadioButton("Datum Aflopend");
+        datumSorterenOplopend = new RadioButton("Datum Oplopend");
+        datumSorterenToggleGroup = new ToggleGroup();
+        datumSorterenAflopend.setToggleGroup(datumSorterenToggleGroup);
+        datumSorterenOplopend.setToggleGroup(datumSorterenToggleGroup);
+
         //set functies to edit listview
         GridPane gridPane = new GridPane();
-        gridPane.add(sorteren1, 0,1);
-        gridPane.add(sorteren2, 0,2);
+        gridPane.add(datumSorterenOplopend, 0,1);
+        gridPane.add(datumSorterenAflopend, 0,2);
         gridPane.add(sorteren3, 0,3);
         gridPane.add(sorteren4, 0,4);
+        gridPane.setVgap(10);
 
         //All the names in the top
         HBox names = new HBox();
@@ -83,10 +93,15 @@ public class MainView extends View {
         listFuncties.setPadding(new Insets(10,10,10,10));
         listFuncties.setSpacing(50);
 
+
         //set everyting in vBox
         VBox vBox= new VBox();
         vBox.getChildren().add(names);
         vBox.getChildren().add(listFuncties);
+        vBox.setPadding(new Insets(10,10,10,10));
+
+
+
 
 
 
@@ -101,6 +116,8 @@ public class MainView extends View {
 
 
     }
+
+
 
     public MenuItem getMenuNewProduct() {
         return menuNewProduct;
@@ -126,7 +143,9 @@ public class MainView extends View {
         return listView;
     }
 
-
+    public ToggleGroup getDatumSorterenToggleGroup() {
+        return datumSorterenToggleGroup;
+    }
 
     @Override
     public Parent getRoot() {
